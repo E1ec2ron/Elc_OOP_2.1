@@ -23,21 +23,19 @@ class CustomUserCreationForm(forms.ModelForm):
     email = forms.EmailField(required=True)
     password1 = forms.CharField(widget=forms.PasswordInput(), label='Пароль')
     password2 = forms.CharField(widget=forms.PasswordInput(), label='Подтверждение пароля')
-    full_name = forms.CharField(
-        label='ФИО',
-        max_length=255,
-        required=True
-    )
-    username = forms.CharField(
-        label='Логин',
-        max_length=150,
-        required=True
-    )
+    full_name = forms.CharField(label='ФИО', max_length=255, required=True)
+    username = forms.CharField(label='Логин', max_length=150, required=True)
     consent = forms.BooleanField(required=True, label='Согласие на обработку персональных данных')
 
     class Meta:
         model = User
         fields = ('username', 'full_name', 'email', 'password1', 'password2', 'consent')
+
+    def email_validator(self):
+        email = self.cleaned_data.get('email')
+        if not email.endswith(r'[a-zA-Z]{2,4}$'):
+            raise ValidationError('Ошибка.')
+        return email
 
     def clean_username(self):
         username = self.cleaned_data.get('username')
