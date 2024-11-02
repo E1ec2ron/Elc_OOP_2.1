@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
+
 from django.core.exceptions import ValidationError
 import re
 
@@ -31,9 +32,9 @@ class CustomUserCreationForm(forms.ModelForm):
         model = User
         fields = ('username', 'full_name', 'email', 'password1', 'password2', 'consent')
 
-    def email_validator(self):
+    def clean_email(self):
         email = self.cleaned_data.get('email')
-        if not email.endswith(r'[a-zA-Z]{2,4}$'):
+        if not email.endswith('.ru'):
             raise ValidationError('Ошибка.')
         return email
 
@@ -63,3 +64,6 @@ class CustomUserCreationForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         for field in self.fields.values():
             field.widget.attrs.update({'class': 'form-control'})
+
+    def endswith(self, param):
+        pass
